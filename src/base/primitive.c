@@ -8,6 +8,7 @@
 void primitive();
 void array();
 void primitive_max();
+void array_char(); 
 
 int
 main(void) {
@@ -16,6 +17,8 @@ main(void) {
 	array();
 	printf("\n");
 	primitive_max();
+	printf("\n");
+	array_char();
 
 	return 0;
 }
@@ -24,21 +27,15 @@ main(void) {
 
 void primitive() {
 
-	//Integer Type
 	printf("\n%d %d\n", sizeof(int), sizeof(int *));
-	//Integer Variable
 	int i = 99;
 	printf("%d %p\n", i, &i);
-	//Integer Pointer
 	int *j = &i;
 	printf("%d %p\n", *j, j);
 
-	//Character Type
 	printf("\n%d %d\n", sizeof(char), sizeof(char *));
-	//Character Variable
 	char c = 'z';
 	printf("%c %p\n", c, &c);
-	//Character Pointer
 	char *d = &c;
 	printf("%c %p\n", *d, d);
 
@@ -46,14 +43,12 @@ void primitive() {
 
 void array() {
 
-	//Array Caracter
 	char array[7] = {0};
 	printf("\n%s %d %p\n", array, sizeof(array), array);
 	char temp[7] = {'o','i','t','a','t','e'};//temp[7]=NULL or \0
 	memcpy(array, temp, sizeof(array));
 	printf("%s %d %p %c %p\n", array, sizeof(array), array, array[0], &array[0]);
 
-	//Array Integer
 	int array_int[7] = {0};
 	printf("\n%s %d %p\n", array_int, sizeof(array_int), array_int);
 	int temp_int[7] = {1,2,3,4,5,6};//temp_int[7]=0
@@ -72,4 +67,16 @@ void primitive_max() {
 }
 
 
+void array_char() {
 
+	char *message[] = {
+		"first",
+		"second",
+		"third",
+		"forth"
+	};
+
+	int i = 0;
+	for(i; i<4; i++) printf("%s %d\n", message[i], sizeof(message[i]));
+	printf("%d\n", sizeof(message));	
+}

@@ -15,6 +15,8 @@ int *integer_p();
 char *character_p();
 struct structure *structure_ret_p();
 
+char *array_p();
+
 int
 main() {
 
@@ -29,7 +31,6 @@ main() {
 
 	printf("\n\n");
 
-
 	int *i = integer_p();
 	printf("%d %p\n\n", *i, i);
 
@@ -37,23 +38,26 @@ main() {
 	printf("%c %p\n\n", *d, d);
 
 	struct structure *str_p = structure_ret_p();
-	//TODO array within structure
+	//TODO This is wrong. There is array within structure.
 	printf("%d %s %d %p\n\n", str_p->id, str_p->name, sizeof(str_p), str_p);
-	
+
+	//TODO This is wrong. Do not return array from function.
+	char *array;
+	array = array_p();
+	printf("%s %p\n", array, array);	
+
 	return 0;
 }
 
 
 int integer() {
 	int a = 9;
-
 	printf("%d %p\n", a, &a);
 	return a;
 }
 
 char character() {
 	char c = 'c';
-
 	printf("%c %p\n", c, &c);
 	return c;
 }
@@ -83,6 +87,7 @@ char *character_p() {
 	return c;
 }
 
+//TODO This method is wrong.
 struct structure *structure_ret_p() {
 
 	struct structure temp = {99, "oitate"};
@@ -90,3 +95,10 @@ struct structure *structure_ret_p() {
 	printf("%d %s %d %p\n", str->id, str->name, sizeof(str), &str);
 	return str;
 }
+
+//TODO This method is wrong.
+char *array_p() {
+	char str[] = "this is wrong."; 
+	return str;
+}
+
