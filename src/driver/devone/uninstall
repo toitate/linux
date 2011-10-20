@@ -1,0 +1,5 @@
+sudo /sbin/rmmod devone
+/bin/dmesg | tail
+sudo tail /var/log/messages
+
+sudo rm -f /dev/devone
