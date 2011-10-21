@@ -1,0 +1,1 @@
+cmd_/home/ec2-user/linux/linux/src/driver/devone/devone.ko := ld -r -m elf_i386 -T /usr/src/kernels/2.6.35.14-95.38.amzn1.i686/scripts/module-common.lds --build-id -o /home/ec2-user/linux/linux/src/driver/devone/devone.ko /home/ec2-user/linux/linux/src/driver/devone/devone.o /home/ec2-user/linux/linux/src/driver/devone/devone.mod.o

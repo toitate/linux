@@ -11,7 +11,6 @@
 #include <linux/cdev.h>
 #include <linux/sched.h>
 #include <linux/slab.h>
-#include <linux/malloc.h>
 
 #include <asm/current.h>
 #include <asm/uaccess.h>
@@ -30,7 +29,7 @@ static struct cdev devone_cdev;
 struct devone_data {
 	unsigned char value;
 	rwlock_t lock;
-}
+};
 
 static int devone_open(struct inode *inode, struct file *file) {
 

@@ -12,41 +12,41 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-typedef strcut l_data {
+typedef strcut column {
 	char ch;
-	struct l_data *pre;
-	struct l_data *next;
+	struct column *pre;
+	struct column *next;
 }
 
-void add_head(struct l_data new_list);
-void add_tail(struct l_data new_list);
+void add_head(struct column c);
+void add_tail(struct column c);
 void remove_all();
 
-struct l_data remove_head();
-struct l_data remove_tail();
+struct column remove_head();
+struct column remove_tail();
 
-struct l_data get_attr(int n);
-void set_attr(int n, struct l_data new_data);
+struct column get_attr(int n);
+void set_attr(int n, struct column new_data);
 void remove_attr(int n);
 
 int get_count();
 int empty();
 
-int insert_after(int n, struct l_data new_data);
-int insert_before(int n, struct l_data new_data);
+int insert_after(int n, struct column new_data);
+int insert_before(int n, struct column new_data);
 
-int find_data(struct l_data data);
-struct l_data get_next();
+int find_data(struct column data);
+struct column get_next();
 void get_head_pos();
-struct l_data get_before();
+struct column get_before();
 void get_tail_pos();
 
-struct l_data *head, *tail, *ptr;
+struct column *head, *tail, *ptr;
 
 
 int
 main() {
-	struct l_data data;
+	struct column data;
 	char ch;
 /*
 	ch = getche();
@@ -70,59 +70,46 @@ main() {
 }
 
 
-void add_head(struct l_data new_list) {
+void add_head(struct column c) {
 
-	struct l_data *p;
-
-	p = (struct l_data *)malloc(sizeof(struct l_data));
-
-	*p = new_list;
+	struct column *p;
 	
+	p = (struct column *)malloc(sizeof(struct column));
+	*p = c;
 	p->pre = NULL;
 	p->next = head;
-
 	if (head) head->pre = p;
-
 	head = p;
-
 }
 
-void add_tail(struct l_data new_list) {
+void add_tail(struct column c) {
 
-	struct l_data *p;
+	struct column *p;
 
-	p = (struct l_data *)malloc(sizeof(struct l_data));
-
+	p = (struct column *)malloc(sizeof(struct column));
 	if (tail) tail->next = p;
 	else tail->pre = p;
-	
-	*p = new_list;
-	
+	*p = c;
 	p->pre = tail;
 	p->next = NULL;
-	
 	tail = p;
-
 }
 
 void remove_all() {
 
-	struct l_data *p, *next;
+	struct column *p, *next;
 	
 	for (p=head; p; p=next) {
 		next = p->next;
 		free(p);
 	}
-
 	tail = head = NULL;
 }
 
-struct l_data remove_head(){
+struct column remove_head(){
 
-	struct l_data ret;
-	
+	struct column ret;
 	ret.ch = '\0';//NULL;
-
 	if (head) {
 		ret = *head;
 		free(head);
@@ -130,19 +117,18 @@ struct l_data remove_head(){
 		if (head) head->pre = NULL;
 		else tail = NULL;
 	}
-
 	ret.next = NULL;
 	return ret;
 }
 
-struct l_data remove_tail() {
+struct column remove_tail() {
 
-	struct l_data ret;
+	struct column ret;
 	
 	ret.ch = '\0';//NULL;
 
 	if (tail) {
-		struct l_data *p;
+		struct column *p;
 		ret = *tail;
 		if (tail->pre) tail->pre->next = NULL; 
 		free(tail);
@@ -154,10 +140,10 @@ struct l_data remove_tail() {
 	return ret;
 }
 
-struct l_data get_attr(int n) {
+struct column get_attr(int n) {
 
-	struct l_data *p;
-	struct l_data ret;
+	struct column *p;
+	struct column ret;
 
 	ret.ch = '\0';
 	ret.next = NULL;
@@ -171,10 +157,10 @@ struct l_data get_attr(int n) {
 	return ret;
 }
 
-void set_attr(int n, struct l_data new_data) {
+void set_attr(int n, struct column new_data) {
 
-	struct l_data *p;
-	struct l_data *next, *pre;
+	struct column *p;
+	struct column *next, *pre;
 
 	if (n<0) return ret;
 
@@ -194,8 +180,8 @@ void set_attr(int n, struct l_data new_data) {
 
 void remove_attr(int n) {
 
-	struct l_data *p;
-	struct l_data *pre;
+	struct column *p;
+	struct column *pre;
 
 	if (n < 0) return ret;
 	if (n == 0) return ret;
@@ -215,7 +201,7 @@ void remove_attr(int n) {
 
 int get_count() {
 
-	struct l_data *p;
+	struct column *p;
 	int n = 0;
 
 	if (head) {
@@ -230,21 +216,21 @@ int empty() {
 	return head ? 0 : 1;
 }
 
-int insert_after(int n, struct l_data new_data) {
+int insert_after(int n, struct column new_data) {
 
 	return 0;
 }
 
-int insert_before(int n, struct l_data new_data) {
+int insert_before(int n, struct column new_data) {
 
 	return 0;
 }
 
-int find_data(struct l_data data) {
+int find_data(struct column data) {
 	return 0;
 }
 
-struct l_data get_next() {
+struct column get_next() {
 }
 
 void get_head_pos() {

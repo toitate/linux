@@ -4,6 +4,8 @@
 #include <float.h>
 #include <memory.h>
 
+int integer;
+char ch;
 
 void primitive();
 void array();
@@ -28,15 +30,29 @@ main(void) {
 void primitive() {
 
 	printf("\n%d %d\n", sizeof(int), sizeof(int *));
-	int i = 99;
+
+	printf("%d %p\n", integer, &integer);
+	int i;
 	printf("%d %p\n", i, &i);
-	int *j = &i;
+	i = 99;
+	printf("%d %p\n", i, &i);
+
+	int *j;
+	printf("%d %p\n", *j, j);
+	j = &i;
 	printf("%d %p\n", *j, j);
 
 	printf("\n%d %d\n", sizeof(char), sizeof(char *));
-	char c = 'z';
+
+	printf("%c %p\n", ch, &ch);
+	char c ;
 	printf("%c %p\n", c, &c);
-	char *d = &c;
+	c = 'z';
+	printf("%c %p\n", c, &c);
+
+	char *d;
+	printf("%c %p\n", *d, d);
+	d = &c;
 	printf("%c %p\n", *d, d);
 
 }
