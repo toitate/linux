@@ -2,7 +2,7 @@
 #CFLAGS += -Wall
 #CFILES = devone.c
 
-obj-m +:= devone.o
+obj-m := devone.o
 #sample-objs := $(CFILES:.c=.o)
 
 all:

@@ -1,50 +1,54 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+
+#define LEN 10 
 
 
-char sort(char a[], int head, int tail);
-void swap(char *a, char *b);
+
+int *quick_sort(int array[], int head, int tail); 
+void display(int array[], int len);
 
 int
 main() {
-	char *a = "saheufhasdjhaflehf";
-	int n = strlen(a);
-	a = sort(a, 0, --n);
-	printf("%s\n", a);
+	
+	int array[LEN] = {14,2,21,5,37, 9, 12, 3, 47, 22};
+	int *array_sort = quick_sort(array, 0, LEN-1);
+	display(array, LEN);
 	return 0;
 }
 
 
-char *sort(char *a, int head, int tail) {
+int *quick_sort(int array[], int head, int tail) {
 
-	if ((tail-head) == 1) {
-		if (*a[head] > *(a[tail])) swap(a[head], a[tail]);
-	} else {
-		int t = (head+tail)/2;
-		int i = -1;
-		int j = n;
-
-		while (i < j) {
-			while (*(a+(++i)) < t);
-			while (*(a+(--j)) > t);
-			if (i < j) swap(a+i, a+j);
-			else if (i == j) {
-				sort(a, i);
-				sort(a+i+1, n-i-1);
-
-			} else {
-				sort(a, j+1);
-				sort(a+i, n-i);
-			}
-			
-		}
+	int x = array[head];
+	int i = head;
+	int j = tail;
+	
+	while (1) {
+		int temp;
+		while (array[i] < x) i++;
+		while (x < array[j]) j--;
+		if (i>=j) break;
+		temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+		i++;
+		j--;
 	}
-	return a;
+	display(array, LEN);
+
+	if (head < i-1) {
+		quick_sort(array, head, i-1);
+	}
+	if (j+1 < tail) {
+		quick_sort(array, j+1, tail);
+	}
+	return array;
 }
 
-void swap(char *a, char *b) {
-	char *temp = a;
-	a = b;
-	b = temp;
+void display(int array[], int len) {
+	int i;
+	for(i=0; i<len; i++)
+		printf("%4d", array[i]);
+	printf("\n");
 }
+
