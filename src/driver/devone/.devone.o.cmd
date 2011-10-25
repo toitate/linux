@@ -602,6 +602,7 @@ deps_/home/ec2-user/linux/linux/src/driver/devone/devone.o := \
     $(wildcard include/config/x86/intel/usercopy.h) \
   /usr/src/kernels/2.6.35.14-95.38.amzn1.i686/arch/x86/include/asm/uaccess_32.h \
     $(wildcard include/config/debug/strict/user/copy/checks.h) \
+  /home/ec2-user/linux/linux/src/driver/devone/devone.h \
 
 /home/ec2-user/linux/linux/src/driver/devone/devone.o: $(deps_/home/ec2-user/linux/linux/src/driver/devone/devone.o)
 

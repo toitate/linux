@@ -16,6 +16,8 @@
 #include <asm/current.h>
 #include <asm/uaccess.h>
 
+#include "devone.h"
+
 MODULE_LICENSE("Dual BSD/GPL");
 
 #define DRIVER_NAME "devone"
@@ -29,19 +31,79 @@ static struct cdev c_dev;
 static struct class *dev_class = NULL;
 static dev_t d_dev;
 
-struct data {
+struct d_data {
 	unsigned char value;
 	rwlock_t lock;
 };
 
-static int d_open(struct inode *inode, struct file *file) {
+int d_ioctl(struct inode *inode, struct file *file,
+			unsigned int cmd, unsigned long arg) {
 
-	struct data *p;
+	struct d_data *dev = file->private_data;
+	int ret = 0;
+	unsigned char value;
+	struct ioctl_cmd data;
+
+	memset(&data, 0,sizeof(data));
+
+	switch (cmd) {
+		case IOCTL_VALSET:
+			if (!capable(CAP_SYS_ADMIN)) {
+				ret = -EPERM;
+				goto done;
+			}
+			if (!access_ok(VERIFY_READ, (void __user *)arg, _IOC_SIZE(cmd))) {
+				ret = -EFAULT;
+				goto done;
+			}
+			if (copy_from_user(&data, (int __user *)arg, sizeof(data))) {
+				ret = -EFAULT;
+				goto done;
+			}
+			printk("IOCTL_cmd.val %u (%s)\n", data.value, __func__);
+
+			write_lock(&dev->lock);
+			value = dev->value;
+			write_unlock(&dev->lock);
+
+			break;
+
+		case IOCTL_VALGET:
+			if (!access_ok(VERIFY_WRITE, (void __user *)arg, _IOC_SIZE(cmd))) {
+				ret = -EFAULT;
+				goto done;
+			}
+
+			read_lock(&dev->lock);
+			value = dev->value;
+			read_unlock(&dev->lock);
+			data.value = value;
+			if (copy_to_user((int __user *)arg, &data, sizeof(data))) {
+				ret = -EFAULT;
+				goto done;
+			}
+
+			break;
+
+		default:
+			ret = -ENOTTY;
+			break;
+	}
+
+done:
+	return (ret);
+
+}
+
+
+int d_open(struct inode *inode, struct file *file) {
+
+	struct d_data *p;
 
 	printk("%s: major %d minor %d (pid %d)\n", __func__, 
 				imajor(inode), iminor(inode), current->pid);
 
-	p = kmalloc(sizeof(struct data), GFP_KERNEL);
+	p = kmalloc(sizeof(struct d_data), GFP_KERNEL);
 	if (p == NULL) {
 		printk("%s: Not memory\n", __func__);
 		return 1;//-ENOMEN;
@@ -54,7 +116,7 @@ static int d_open(struct inode *inode, struct file *file) {
 	return 0;
 }
 
-static int d_close(struct inode *inode, struct file *file) {
+int d_close(struct inode *inode, struct file *file) {
 	
 	printk("%s: major %d minor %d (pid %d)\n", __func__, 
 				imajor(inode), iminor(inode), current->pid);
@@ -69,7 +131,7 @@ static int d_close(struct inode *inode, struct file *file) {
 
 ssize_t d_write(struct file *file, const char __user *buf, size_t count, loff_t *f_pos) {
 
-	struct data *p = file->private_data;
+	struct d_data *p = file->private_data;
 	unsigned char value;
 	int ret = 0;
 
@@ -91,7 +153,7 @@ out:
 }
 
 ssize_t d_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos) {
-	struct data *p = fp->private_data;
+	struct d_data *p = fp->private_data;
 	int i;
 	unsigned char value;
 	int ret;
@@ -119,6 +181,7 @@ struct file_operations devone_fops = {
 	.release = d_close,
 	.read = d_read,
 	.write = d_write,
+	.ioctl = d_ioctl,
 };
 
 static int d_init(void) {
