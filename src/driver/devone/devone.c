@@ -23,7 +23,7 @@ MODULE_LICENSE("Dual BSD/GPL");
 static int d_devs = 1;
 static int d_major = 0;
 static int d_minor = 0;
-//module_param(d_major, uint, 0);
+module_param(d_major, uint, 0);
 
 static struct cdev c_dev;
 static struct class *dev_class = NULL;
@@ -143,12 +143,12 @@ static int d_init(void) {
 	if (cdev_err) goto error;
 
 	//Register class
-	d_class = class_create(THIS_MODULE, DRIVER_NAME);
+/*	d_class = class_create(THIS_MODULE, DRIVER_NAME);
 	if (IS_ERR(d_class)) goto error;
 	d_dev = MKDEV(d_major, d_minor);
 	dev_class = device_create(
 		d_class, NULL, d_dev, NULL, DRIVER_NAME" %d", d_minor);
-
+*/
 	printk(KERN_ALERT "%s driver(major %d) installed.\n", DRIVER_NAME, d_major);
 
 	return 0;
@@ -165,9 +165,9 @@ error:
 static void d_exit(void) {
 	dev_t dev = MKDEV(d_major, d_minor);
 	
-	device_destroy(dev_class, d_dev);
+/*	device_destroy(dev_class, d_dev);
 	class_destroy(dev_class);
-	
+*/	
 	cdev_del(&c_dev);
 	unregister_chrdev_region(dev, d_devs);
 
