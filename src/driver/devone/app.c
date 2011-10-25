@@ -31,7 +31,7 @@ main() {
 	char file[30];
 
 	for (i=0; i<DEVCOUNT; i++) {
-		snprintf(file, sizeof(file), "%s%d", DEVFILE, i);
+		snprintf(file, sizeof(file), "%s %d", DEVFILE, i);
 		printf("%s\n", file);
 		fd[i] = open_file(file);
 	}

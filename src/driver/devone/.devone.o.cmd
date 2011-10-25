@@ -587,6 +587,16 @@ deps_/home/ec2-user/linux/linux/src/driver/devone/devone.o := \
   include/trace/events/kmem.h \
   include/linux/kmemleak.h \
     $(wildcard include/config/debug/kmemleak.h) \
+  include/linux/device.h \
+    $(wildcard include/config/of.h) \
+    $(wildcard include/config/debug/devres.h) \
+    $(wildcard include/config/devtmpfs.h) \
+  include/linux/klist.h \
+  /usr/src/kernels/2.6.35.14-95.38.amzn1.i686/arch/x86/include/asm/device.h \
+    $(wildcard include/config/dmar.h) \
+    $(wildcard include/config/amd/iommu.h) \
+  include/linux/pm_wakeup.h \
+    $(wildcard include/config/pm.h) \
   /usr/src/kernels/2.6.35.14-95.38.amzn1.i686/arch/x86/include/asm/uaccess.h \
     $(wildcard include/config/x86/wp/works/ok.h) \
     $(wildcard include/config/x86/intel/usercopy.h) \
