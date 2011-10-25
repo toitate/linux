@@ -19,31 +19,31 @@ MODULE_LICENSE("Dual BSD/GPL");
 
 #define DRIVER_NAME "devone"
 
-static int devone_devs = 1;
-static int devone_major = 0;
+static int d_devs = 1;
+static int d_major = 0;
 //static int devone_minor = 0;
-module_param(devone_major, uint, 0);
+module_param(d_major, uint, 0);
 
-static struct cdev devone_cdev;
+static struct cdev c_dev;
 
-struct devone_data {
+struct data {
 	unsigned char value;
 	rwlock_t lock;
 };
 
-static int devone_open(struct inode *inode, struct file *file) {
+static int d_open(struct inode *inode, struct file *file) {
 
-	struct devone_data *p;
+	struct data *p;
 
 	printk("%s: major %d minor %d (pid %d)\n", __func__, 
 				imajor(inode),
 				iminor(inode),
 				current->pid
 			);
-	p = kmalloc(sizeof(struct devone_data), GFP_KERNEL);
+	p = kmalloc(sizeof(struct data), GFP_KERNEL);
 	if (p == NULL) {
 		printk("%s: Not memory\n", __func__);
-		return -1;//-ENOMEN;
+		return 1;//-ENOMEN;
 	}
 
 	p->value = 0xff;
@@ -53,7 +53,7 @@ static int devone_open(struct inode *inode, struct file *file) {
 	return 0;
 }
 
-static int devone_close(struct inode *inode, struct file *file) {
+static int d_close(struct inode *inode, struct file *file) {
 	
 	printk("%s: major %d minor %d (pid %d)\n", __func__, 
 				imajor(inode),
@@ -69,9 +69,9 @@ static int devone_close(struct inode *inode, struct file *file) {
 	return 0;
 }
 
-ssize_t devone_write(struct file *file, const char __user *buf, size_t count, loff_t *f_pos) {
+ssize_t d_write(struct file *file, const char __user *buf, size_t count, loff_t *f_pos) {
 
-	struct devone_data *p = file->private_data;
+	struct data *p = file->private_data;
 	unsigned char value;
 	int ret = 0;
 
@@ -91,8 +91,8 @@ out:
 	return (ret);
 }
 
-ssize_t devone_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos) {
-	struct devone_data *p = fp->private_data;
+ssize_t d_read(struct file *fp, char __user *buf, size_t count, loff_t *f_pos) {
+	struct data *p = fp->private_data;
 	int i;
 	unsigned char value;
 	int ret;
@@ -119,28 +119,28 @@ out:
 
 
 struct file_operations devone_fops = {
-	.open = devone_open,
-	.release = devone_close,
-	.read = devone_read,
-	.write = devone_write,
+	.open = d_open,
+	.release = d_close,
+	.read = d_read,
+	.write = d_write,
 };
 
 
-static int devone_init(void) {
-	dev_t dev = MKDEV(devone_major, 0);
+static int d_init(void) {
+	dev_t dev = MKDEV(d_major, 0);
 	int alloc_ret = 0;
 	int major;
 	int cdev_err = 0;
 
-	alloc_ret = alloc_chrdev_region(&dev, 0, devone_devs, DRIVER_NAME);
+	alloc_ret = alloc_chrdev_region(&dev, 0, d_devs, DRIVER_NAME);
 	if (alloc_ret)
 		goto error;
-	devone_major = major = MAJOR(dev);
+	d_major = major = MAJOR(dev);
 
-	cdev_init(&devone_cdev, &devone_fops);
-	devone_cdev.owner = THIS_MODULE;
-	devone_cdev.ops = &devone_fops;
-	cdev_err = cdev_add(&devone_cdev, MKDEV(devone_major, 0), devone_devs);
+	cdev_init(&c_dev, &devone_fops);
+	c_dev.owner = THIS_MODULE;
+	c_dev.ops = &devone_fops;
+	cdev_err = cdev_add(&c_dev, MKDEV(d_major, 0), d_devs);
 	if (cdev_err) 
 		goto error;
 
@@ -150,20 +150,20 @@ static int devone_init(void) {
 
 error:
 	if (cdev_err == 0)
-		cdev_del(&devone_cdev);
+		cdev_del(&c_dev);
 	if (alloc_ret == 0)
-		unregister_chrdev_region(dev, devone_devs);
+		unregister_chrdev_region(dev, d_devs);
 
 	return -1;
 }
 
-static void devone_exit(void) {
-	dev_t dev = MKDEV(devone_major, 0);
+static void d_exit(void) {
+	dev_t dev = MKDEV(d_major, 0);
 
-	cdev_del(&devone_cdev);
-	unregister_chrdev_region(dev, devone_devs);
+	cdev_del(&c_dev);
+	unregister_chrdev_region(dev, d_devs);
 	printk(KERN_ALERT "devone driver uninstalled.\n");
 }
 
-module_init(devone_init);
-module_exit(devone_exit);
+module_init(d_init);
+module_exit(d_exit);
